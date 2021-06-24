@@ -66,7 +66,7 @@ function App(props) {
       });
 
     };
-  }, [props.history, loggedIn])
+  }, [])
 
 
 
@@ -132,10 +132,27 @@ function App(props) {
         if (data.token) {
           localStorage.setItem('jwt', data.token);
           localStorage.removeItem('regEmail');
-          setLoggedIn(true)
-          setUserEmail(email)
-          props.history.push('/')
         }
+        return data.token
+      }).then((token) => {
+        setLoggedIn(true)
+        setUserEmail(email)
+        api.getInitialCards()
+        .then((result) => {
+          console.log(result.cards)
+          setCards(result.cards)
+        }).catch((err) => {
+          console.log(err);
+        });
+        api.getUserInfo()
+        .then((result) => {
+          setCurrentUser(result.user);
+          console.log(result.user)
+        })
+        .catch((err) => {
+          console.log(err); // выведем ошибку в консоль
+        });
+        props.history.push("/");
       }).catch((err) => {
         console.log(err); // выведем ошибку в консоль
       });

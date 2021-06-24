@@ -5,21 +5,30 @@ class Api {
     this._headers = headers
   }
   getInitialCards() {
+    const jwt = localStorage.getItem("jwt");
     console.log(this._baseUrl)
     return fetch(`${this._baseUrl}/cards`, {
       method: "GET",
       credentials: 'include',
-      headers: this._headers
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._checkResponse)
   };
 
   getUserInfo() {
+    const jwt = localStorage.getItem("jwt");
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       credentials: 'include',
-      headers: this._headers
-      ,
+      headers: {
+        "Content-Type": "application/json",
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      }
     })
       .then(this._checkResponse)
   }
@@ -62,14 +71,14 @@ class Api {
 
   changeLikeCardStatus(cardId, isLiked) {
     if (isLiked) {
-      return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: "DELETE",
         credentials: 'include',
         headers: this._headers
       })
         .then(this._checkResponse)
     } else {
-      return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+      return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: "PUT",
         credentials: 'include',
         headers: this._headers
@@ -80,7 +89,7 @@ class Api {
   }
 
   addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "PUT",
       credentials: 'include',
       headers: this._headers
@@ -90,7 +99,7 @@ class Api {
   }
 
   removeLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: this._headers
     })
